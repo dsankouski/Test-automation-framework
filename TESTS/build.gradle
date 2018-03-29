@@ -1,0 +1,42 @@
+group 'TESTS'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'groovy'
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+project(':TESTS') {
+    dependencies {
+        compile project(':CONTROLS')
+        compile project(':FRAMEWORK')
+    }
+}
+
+dependencies {
+//    compile project(':CONTROLS')
+//    compile project(':FRAMEWORK')
+    compile group: 'org.testng', name: 'testng', version: "${testNGVersion}"
+    compile 'org.codehaus.groovy:groovy-all:2.3.11'
+    compile group: 'org.seleniumhq.selenium', name: 'selenium-java', version: "${webDriverVersion}"
+    compile group: 'org.seleniumhq.selenium', name: 'selenium-api', version: "${webDriverVersion}"
+    compile group: 'com.relevantcodes', name: 'extentreports', version: '2.40.2'
+    // https://mvnrepository.com/artifact/org.assertj/assertj-core
+    testCompile group: 'org.assertj', name: 'assertj-core', version: '3.9.1'
+
+}
+
+task runTests(type: JavaExec, dependsOn: 'classes') {
+    main = 'org.testng.TestNG'
+    classpath = files("./src/test/resources",
+            project.sourceSets.main.compileClasspath,
+            project.sourceSets.test.compileClasspath,
+            project.sourceSets.main.runtimeClasspath,
+            project.sourceSets.test.runtimeClasspath,
+    )
+    args = ["-groups","Regression","-parallel",  "methods", "-threadcount", "1", "-d", "./build/test-output", "./src/test/resources/Regression.xml"]
+}

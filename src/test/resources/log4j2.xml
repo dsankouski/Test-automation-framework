@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" monitorInterval="30">
+
+    <Appenders>
+        <Console
+                name="ConsoleAppender"
+                target="SYSTEM_OUT">
+            <PatternLayout pattern="[%d{yyyy-MM-dd HH:mm:ss,SSS}] [%t] %p (%F:%L) - %m%n"/>
+        </Console>
+
+        <!-- Basic appender for logging to file -->
+        <File name="FileAppender" fileName="logs/taf.log">
+            <PatternLayout pattern="[%d{yyyy-MM-dd HH:mm:ss,SSS}] [%t] %p (%F:%L) - %m%n"/>
+        </File>
+
+        <!-- Routing appender to allow logging different threads to different files -->
+        <Routing name="Routing">
+            <Routes pattern="$${ctx:ROUTINGKEY}">
+                <Route>
+                    <File name="taf-${ctx:ROUTINGKEY}"
+                          fileName="logs/taf-${ctx:ROUTINGKEY}.log">
+                        <PatternLayout>
+                            <pattern>[%d{yyyy-MM-dd HH:mm:ss,SSS}] [%t] %p (%F:%L) - %m%n</pattern>
+                        </PatternLayout>
+                    </File>
+                </Route>
+            </Routes>
+        </Routing>
+
+        <ReportPortalLog4j2Appender name="ReportPortalAppender">
+            <PatternLayout pattern="[%d{HH:mm:ss}] %-5p (%F) - %m%n"/>
+        </ReportPortalLog4j2Appender>
+    </Appenders>
+
+    <Loggers>
+        <Root level="error" additivity="false">
+        </Root>
+        <Logger name="com.datalex" level="error" additivity="false">
+            <AppenderRef ref="Routing" level="error"/>
+            <AppenderRef ref="ConsoleAppender" level="error"/>
+            <AppenderRef ref="FileAppender" level="error"/>
+            <AppenderRef ref="ReportPortalAppender" level="error"/>
+        </Logger>
+    </Loggers>
+
+</Configuration>

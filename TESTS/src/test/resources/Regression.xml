@@ -1,0 +1,17 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="Regression">
+    <listeners>
+        <listener class-name="report.TestListener"></listener>
+        <listener class-name="report.AnnotationTransformer"></listener>
+    </listeners>
+    <test name="regression">
+        <groups>
+            <run>
+                <include name="Regression"/>
+            </run>
+        </groups>
+        <packages>
+            <package name=""/>
+        </packages>
+    </test>
+</suite>

@@ -1,0 +1,45 @@
+group 'TestNG'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: 'groovy'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile project(':TESTS')
+    compile project(':REPORT')
+    compile project(':CONTROLS')
+    compile project(':FRAMEWORK')
+    // https://mvnrepository.com/artifact/org.testng/testng
+    testCompile group: 'org.testng', name: 'testng', version: "${testNGVersion}"
+    // https://mvnrepository.com/artifact/com.google.inject/guice
+    compile group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.4'
+    // https://mvnrepository.com/artifact/com.google.inject/guice
+    compile group: 'com.google.inject', name: 'guice', version: '4.0'
+    // https://mvnrepository.com/artifact/com.relevantcodes/extentreports
+    compile group: 'com.relevantcodes', name: 'extentreports', version: '2.40.2'
+
+}
+
+
+test{
+        useTestNG() {
+            suites 'D:\\TestNG\\src\\test\\resources\\Regression.xml'
+        }
+}
+
+task runTests(type: JavaExec, dependsOn: 'classes') {
+    main = 'org.testng.TestNG'
+    classpath = files("./src/test/resources",
+            project.sourceSets.main.compileClasspath,
+            project.sourceSets.test.compileClasspath,
+            project.sourceSets.main.runtimeClasspath,
+            project.sourceSets.test.runtimeClasspath,
+    )
+    args = ["-groups","Regression","-parallel",  "methods", "-threadcount", "1", "-d", "./build/test-output", "./TESTS/src/test/resources/Regression.xml"]
+}
